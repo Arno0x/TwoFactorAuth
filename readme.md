@@ -17,7 +17,7 @@ Dependencies
 
 TwoFactorAuth requires PHP5. It also relies on the following libraries:
 
-- The [Google Authenticator PHP Class](https://github.com/PHPGangsta/GoogleAuthenticator) writen by Michael Kliewe, to generate GAuth secret and OTP validation. **Beware** that I've modified this class to rely on a local library for QRCode generation rather than a URL at google.com, so don't install the source library, use the one provided with TwoFactorAuth only.
+- The [Google Authenticator PHP Class](https://github.com/PHPGangsta/GoogleAuthenticator) writen by Michael Kliewe, to generate GAuth secret and OTP validation. **Beware** that I've modified this class to rely on a local library for QRCode generation rather than GoogleChart URL, so don't install the source library, use the one provided with TwoFactorAuth only.
 
 - The [PHP QRCode library](http://phpqrcode.sourceforge.net/) written by Dominik Dzienia, for 2D QRCode generation.
 
@@ -31,7 +31,7 @@ TwoFactorAuth also relies on some PHP5 libraries that you'll have to install on 
 Features
 -----------
 
-TwoFactorAuth uses a SQLite3 database for it's users database, but this can be easily changed by changing the **/twofactorauth/lib/DBManager.php** class to use any other database type.
+TwoFactorAuth uses a SQLite3 database for it's users database, but this can be easily changed by overiding the **/twofactorauth/lib/DBManager.php** class to use any other database type.
 
 The following features are available:
 
@@ -46,15 +46,19 @@ The login page :
 ![login page](http://i.imgur.com/9SBEgMV.jpg)
 
 The user management page :
+
 ![user page](http://i.imgur.com/DXyWGiL.jpg)
 
 The QRCode display :
+
 ![qrcode page](http://i.imgur.com/Jm6OhXl.jpg)
 
 The administration page :
+
 ![admin page](http://i.imgur.com/ivF0hRf.jpg)
 
 Adding a user :
+
 ![addUser page](http://i.imgur.com/TwzUSvl.jpg)
 
 How does it work ?
@@ -62,6 +66,7 @@ How does it work ?
 
 After a user is created, a QRCode is displayed representing the random GAuth secret generated for this user. This QRCode must be scanned with the Google Authenticator application. This should be done only once for each user, unless the user lost/changed his phone and needs to re-enter his QRCode.
 Once a QRCode has been scanned with the Google Authenticator application, a OTP token is being generated every 30s:
+
 ![qrcode](http://i.imgur.com/fJgQwZT.jpg)
 
 This token must be entered on the login page along with the user's password:
@@ -75,9 +80,9 @@ Once a user has logged in, a PHP session is created, which name can be configure
 
 Installation
 ------------
-1. Unzip the TwoFactorAuth on your web server's directory and ensure all files and folders have appropriate user:group ownership, depending on your installation (*might be something like www-data:www-data*).
+1. Unzip the TwoFactorAuth package in your web server's directory and ensure all files and folders have appropriate user:group ownership, depending on your installation (*might be something like www-data:www-data*).
 
-2. Edit the configuration file **/twofactorauth/config.php** and make it match your needs and personnal settings. See the configuration section below
+2. Edit the configuration file **/twofactorauth/config.php** and make it match your needs and personnal settings. See the configuration section below.
 
 3. Next, navigate to the install.php page (*exact path will vary depending on where you installed the TwoFactorAuth application*) :
 http://www.exemple.com/twofactorauth/admin/install.php . This page will create the SQLite3 user database and the user table schema. It will also create a first "admin" account, with password "admin" and will display a corresponding QRCode to scan. Feel free to either delete this admin account once you created your own administrator's account, or at least **change its password** !
@@ -97,7 +102,7 @@ Edit the **/twofactorauth/config.php** file to match your needs. Most settings c
 
 - **QRCODE_TITLE** : This is the title that will appear on top of the OTP token in the Google Athenticator app. Set it to your own application name, or maybe server name, whatever relevant and sensible to your users
 
-- **SESSION_NAME** : This is the PHP session name (also used for the session cookie). You can set it to your own application session name if you plan to re-use it for further user authorization and profile
+- **SESSION_NAME** : This is the PHP session name (*also used for the session cookie*). You can set it to your own application session name if you plan to re-use it for further user authorization and profile
 
 - **AUTH\_SUCCEED\_REDIRECT\_URL** : The login page supports a URL parameter "from" (*ex: "http://www.exemple.com/twofactorauth/login/login.php?from=/myapp"*). Upon successful login, the login page will redirect to the path specified in the "from" paraeter (*nb: it can only be a path local to the FQDN*). However, if the "from" parameter is not present in the URL, the login page will redirect the user to the URL specified in AUTH\_SUCCEED\_REDIRECT\_URL
 
