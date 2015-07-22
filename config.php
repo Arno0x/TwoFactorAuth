@@ -12,6 +12,7 @@
 //========================================================================
 
 // Setting the path to the users database file
+define('USER_SQL_DATABASE_DIRECTORY', dirname(__FILE__).DIRECTORY_SEPARATOR.'db');
 define('USER_SQL_DATABASE_FILE', dirname(__FILE__).DIRECTORY_SEPARATOR.'db'.DIRECTORY_SEPARATOR.'users.sqlite3');
 
 //========================================================================
@@ -46,7 +47,6 @@ define('QRCODE_TITLE','www.exemple.com');
 // Set the session name you want to use. If you're integrating TwoFactorAuth
 // with your own application session, you might want to set it to the session name
 // you're already using
-// --> CHANGE THIS TO YOUR OWN MEANINGFUL SESSION NAME
 define('SESSION_NAME','2fatkn');
 
 // Redirection mechanism upon successful login :
@@ -54,6 +54,5 @@ define('SESSION_NAME','2fatkn');
 // is passed as a GET parameter to the login page, then the user will be redirected back to
 // the originating URL
 // Otherwise, redirect to the URL specified here
-// --> CHANGE THIS TO YOUR OWN MEANINGFUL PAGE
 define('AUTH_SUCCEED_REDIRECT_URL','https://www.exemple.com/');
 ?>
