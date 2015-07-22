@@ -12,7 +12,12 @@
  
 //------------------------------------------------------
 // Include config file
-require_once ("../config.php");
+require_once ('../config.php');
+
+//------------------------------------------------------
+// On first installation, create some directories
+if (!file_exists(USER_SQL_DATABASE_DIRECTORY)) { mkdir(USER_SQL_DATABASE_DIRECTORY); }
+if (!file_exists(QRCODE_TEMP_DIR)) { mkdir(QRCODE_TEMP_DIR); }
 
 //------------------------------------------------------
 // If the database file does not exists then we start the creation process
@@ -46,7 +51,7 @@ if (!file_exists(USER_SQL_DATABASE_FILE)) {
 	
 	if(!($ret = $dbManager->exec($sql))) {
 	} else {
-	  echo "Table USERS dropped successfully<br>";
+	  echo "[OK] Table USERS dropped successfully<br>";
 	}
 	
 	//------------------------------------------------------
@@ -64,7 +69,7 @@ EOF;
 	  echo $dbManager->lastErrorMsg();
 	  exit();
 	} else {
-	  echo "Table created successfully<br>";
+	  echo "[OK] Table created successfully<br>";
 	}
 	
 	//------------------------------------------------------
@@ -79,13 +84,14 @@ EOF;
     
     //------------------------------------------------------
 	// Create the admin/admin user
-	if ($dbManager->addUser("admin","admin",$secret,true)) {
+	if ($dbManager->addUser("admin","AdminAdmin",$secret,true)) {
 		// Create the QRCode as PNG image
 	    $randomString = bin2hex(openssl_random_pseudo_bytes (15));
 	    $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
 	    $gauth->getQRCode("admin",$secret,$qrcodeimg,QRCODE_TITLE);
 	    
-	    echo "User 'admin' with password 'admin' was successfully created.<br><br>";
+	    echo "[OK] Default admin user 'admin' with password 'AdminAdmin' has been successfully created.<br>";
+	    echo "[WARN] Remember to either CHANGE this password OR create your own admin user and delete this one.";
 	}
 	else {
 		echo "[ERROR] Could not create the admin account in the database: ".$dbManager->lastErroMsg();
@@ -96,7 +102,7 @@ EOF;
 	require_once("showQRCode.php")	;
 	
 } else {
-	echo "Database already installed. If you want to start the installation process over again, delete the user database file: ".USER_SQL_DATABASE_FILE;
+	echo "[ERROR] Database already installed. If you want to start the installation process over again, delete the user database file: ".USER_SQL_DATABASE_FILE;
 	echo "<br>and then call this page again.";
 }
 ?>
