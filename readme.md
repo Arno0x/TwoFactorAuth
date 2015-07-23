@@ -146,6 +146,10 @@ You'll have to edit your nginx configuration file. Assuming the TwoFactorAuth ap
 		}
     }
 
+Credits
+--------
+Many thanks to Alex Nonim <a.nonim@scryptmail.com> for his help fixing few bugs (installation procedure, cookie setting when server is run on a non-standard port, login form security improvement) as well as an XSS vulnerability (!). This is now all fixed.
+
 Todo
 --------
-Probably plenty of things since I've not had any feedback yet. So there might be bugs, security concerns, feature requests etc... Feel free to contact me on my twitter page.
+Although I already had some useful feedback and fixed some bugs, there might still have bugs or security concerns. Also if have a feature request, feel free to contact me on my twitter page.

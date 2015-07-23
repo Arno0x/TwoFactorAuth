@@ -72,7 +72,7 @@ else {
 	        // - Valid for all path on the domain, for this FQDN only
 	        // - Ensure Cookies are not available to Javascript
 	        // - Cookies are sent on https only
-	        $domain = ($_SERVER['HTTP_HOST'] !== 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+	        $domain = ($_SERVER['HTTP_HOST'] !== 'localhost') ? $_SERVER['SERVER_NAME'] : false;
 	        session_set_cookie_params (0, "/", $domain, true, true);
 	    
 	        // Create a session
@@ -85,7 +85,8 @@ else {
 	        //--------------------------------------------------
 	        // Checking which URL we should redirect the user to
 	        if (isset($_POST["from"])) {
-	            $redirectTo = ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on")? "https://" : "http://").$_SERVER["SERVER_NAME"].$_POST["from"];
+	        	$from = urldecode($_POST["from"]);
+	            $redirectTo = ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on")? "https://" : "http://").$_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$from;
 	        }
 	        else {
 	            $redirectTo = AUTH_SUCCEED_REDIRECT_URL;

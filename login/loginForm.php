@@ -59,10 +59,10 @@ html {
 				<span class="panel-title"><strong>LOGIN</strong></span>
             </div> 	<!-- End of panel heading -->
 		
-		    <form id="connectionForm" action="login.php<?php if (isset($_GET["from"])) { echo "?from=".$_GET['from'];} ?>" method="post" style="padding: 10px">
+		    <form id="connectionForm" action="login.php" method="post" style="padding: 10px">
 				<div id="inputgroup1" class="input-group">
 					<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
-					<input type="text" class="form-control" placeholder="Username" id="username" name="username" autofocus>
+					<input type="text" class="form-control" placeholder="Username" id="username" name="username" autocomplete="off" autofocus>
 				</div>
 				<div id="usernameFeedback" class="text-center feedback"></div>
 				<br>
@@ -74,12 +74,12 @@ html {
 				<br>
 				<div id="inputgroup3" class="input-group">
 					<span class="input-group-addon"><span class="fa fa-key"></span></span>
-					<input type="text" placeholder="Google Authenticator Token" class="form-control" id="token" name="token">
+					<input type="text" placeholder="Token" class="form-control" id="token" name="token" autocomplete="off">
 				</div>
 				<div id="tokenFeedback" class="text-center feedback"></div>
 				<br>
 				<div class="text-center"><button id="submit" type="submit" class="btn btn-sm btn-primary">Login <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span></button></div>
-			<?php if (isset($_GET["from"])) { echo "<input type='hidden' name='from' value='".$_GET["from"]."'>"; } ?>
+			<?php if (isset($_GET["from"])) { echo "<input type='hidden' name='from' value='".urlencode($_GET["from"])."'>"; } ?>
 			</form>
 			<?php
 			    if (isset($error)) {
