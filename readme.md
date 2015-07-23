@@ -77,25 +77,6 @@ Once a user has logged in, a PHP session is created, which name can be configure
 - $_SESSION["isAdmin"] : a boolean (true or false) indicating whether or not this use has TwoFactorAuth admin rights 
 - $_SESSION["username"] :  a string containing the authenticated username. This username can be reused by your own app for further authorization checks and profile handling
 
-
-Installation
-------------
-1. Unzip the TwoFactorAuth package in your web server's directory and ensure all files and folders have appropriate user:group ownership, depending on your installation (*might be something like www-data:www-data*).
-
-2. Edit the configuration file **/twofactorauth/config.php** and make it match your needs and personnal settings. See the configuration section below.
-
-3. Next, navigate to the install.php page (*exact path will vary depending on where you installed the TwoFactorAuth application*) :
-http://www.exemple.com/twofactorauth/admin/install.php . This page will create the SQLite3 user database and the user table schema. It will also create a first "admin" account, with password "admin" and will display a corresponding QRCode to scan. Feel free to either delete this admin account once you created your own administrator's account, or at least **change its password** !
-
-From that point, the main features are available at these page:
-
-- Login page : http://www.exemple.com/twofactorauth/login/login.php
-
-- Global administration page : http://www.exemple.com/twofactorauth/admin/admin.php
-
-- Per user administration page : http://www.exemple.com/twofactorauth/user/user.php
-
-
 Configuration
 --------------
 Edit the **/twofactorauth/config.php** file to match your needs. Most settings can be kept to their default values. However, pay attention to the following settings :
@@ -106,8 +87,25 @@ Edit the **/twofactorauth/config.php** file to match your needs. Most settings c
 
 - **AUTH\_SUCCEED\_REDIRECT\_URL** : The login page supports a URL parameter "from" (*ex: "http://www.exemple.com/twofactorauth/login/login.php?from=/myapp"*). Upon successful login, the login page will redirect to the path specified in the "from" paraeter (*nb: it can only be a path local to the FQDN*). However, if the "from" parameter is not present in the URL, the login page will redirect the user to the URL specified in AUTH\_SUCCEED\_REDIRECT\_URL
 
+Installation
+------------
+1. Unzip the TwoFactorAuth package in your web server's directory and ensure all files and folders have appropriate user:group ownership, depending on your installation (*might be something like www-data:www-data*).
 
-NGINX auth_request integration
+2. Edit the configuration file **/twofactorauth/config.php** and make it match your needs and personnal settings. See the configuration section below.
+
+3. Next, navigate to the install.php page (*exact path will vary depending on where you installed the TwoFactorAuth application*) :
+http://www.exemple.com/twofactorauth/admin/install.php . This page will create the SQLite3 user database and the user table schema. It will also create a first "admin" account, with password "AdminAdmin" and will display a corresponding QRCode to scan. Feel free to either delete this admin account once you created your own administrator's account, or at least **change its password** !
+
+From that point, the main features are available at these page:
+
+- Login page : http://www.exemple.com/twofactorauth/login/login.php
+
+- Global administration page : http://www.exemple.com/twofactorauth/admin/admin.php
+
+- Per user administration page : http://www.exemple.com/twofactorauth/user/user.php
+
+
+[OPTIONNAL] NGINX auth_request integration
 ---------------------
 The Nginx auth_request module allows to authenticate each page request against an internal subrequest specified as a URL. The subrequest just has to answer with the proper HTTP status code:
 
