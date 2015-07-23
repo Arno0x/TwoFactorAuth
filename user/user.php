@@ -24,8 +24,9 @@ define('INCLUSION_ENABLED',true);
 session_name(SESSION_NAME);
 session_start();
 
-// Check the currently logged user is NOT admin
+// Check the whether we have a currently logged in user
 if (!(isset($_SESSION["authenticated"]) && $_SESSION["authenticated"] === true)) {
+    echo "<h1>ERROR - You must be logged in to access this page</h1>";
 	http_response_code(401);
 	exit();
 }
