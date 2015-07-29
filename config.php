@@ -38,7 +38,7 @@ define('QRCODE_TEMP_DIR',dirname(__FILE__).DIRECTORY_SEPARATOR.'temp'.DIRECTORY_
 // Set the title that will be used for the QRCode generated
 // This title appears in the Google authenticator App to help identifying what the token relates to
 // --> CHANGE THIS TO YOUR OWN MEANINGFUL TITLE
-define('QRCODE_TITLE','www.exemple.com');
+define('QRCODE_TITLE','www.example.com');
 
 //========================================================================
 // Application & Session settings
@@ -54,5 +54,5 @@ define('SESSION_NAME','2fatkn');
 // is passed as a GET parameter to the login page, then the user will be redirected back to
 // the originating URL
 // Otherwise, redirect to the URL specified here
-define('AUTH_SUCCEED_REDIRECT_URL','https://www.exemple.com/');
+define('AUTH_SUCCEED_REDIRECT_URL','https://www.example.com/');
 ?>

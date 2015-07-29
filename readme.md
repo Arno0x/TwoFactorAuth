@@ -45,9 +45,13 @@ The login page :
 
 ![login page](http://i.imgur.com/9SBEgMV.jpg)
 
+The home page after login :
+
+![home page](http://i.imgur.com/jmheA9c.png)
+
 The user management page :
 
-![user page](http://i.imgur.com/DXyWGiL.jpg)
+![user page](http://i.imgur.com/VYkTnCl.png)
 
 The QRCode display :
 
@@ -55,7 +59,7 @@ The QRCode display :
 
 The administration page :
 
-![admin page](http://i.imgur.com/ivF0hRf.jpg)
+![admin page](http://i.imgur.com/e2xSCFT.png)
 
 Adding a user :
 
@@ -82,18 +86,15 @@ Installation
 ------------
 1. Unzip the TwoFactorAuth package in your web server's directory and ensure all files and folders have appropriate user:group ownership, depending on your installation (*might be something like www-data:www-data*).
 
-2. **Edit the configuration file /twofactorauth/config.php** and make it match your needs and personnal settings. See the configuration section below.
+2. **Edit the configuration file config.php** at the root path of TwoFactorAuth directory, and make it match your needs and personnal settings. See the configuration section below.
 
-3. Next, navigate to the install.php page (*exact path will vary depending on where you installed the TwoFactorAuth application*) :
-http://www.exemple.com/twofactorauth/admin/install.php . This page will create the SQLite3 user database and the user table schema. It will also create a first "admin" account, with password "AdminAdmin" and will display a corresponding QRCode to scan. Feel free to either delete this admin account once you created your own administrator's account, or at least **change its password** !
+3. Next, open a browser and simply navigate the TwoFactorAuth base url (*exact path will vary depending on where you installed the TwoFactorAuth application*) :
+http://www.example.com/twofactorauth/ . This page will finalize the installation process by creating the SQLite3 user database, and the user table schema and allow you to define the first default user with administration rights.
 
-From that point, the main features are available at these page:
+From that point, main features are available on the home page :
 
-- Login page : http://www.exemple.com/twofactorauth/login/login.php
+- Home page : http://www.example.com/twofactorauth/
 
-- Global administration page : http://www.exemple.com/twofactorauth/admin/admin.php
-
-- Per user administration page : http://www.exemple.com/twofactorauth/user/user.php
 
 Configuration
 --------------
@@ -103,7 +104,7 @@ Edit the **/twofactorauth/config.php** file to match your needs. Most settings c
 
 - **SESSION_NAME** : This is the PHP session name (*also used for the session cookie*). You can set it to your own application session name if you plan to re-use it for further user authorization and profile
 
-- **AUTH\_SUCCEED\_REDIRECT\_URL** : The login page supports a URL parameter "from" (*ex: "http://www.exemple.com/twofactorauth/login/login.php?from=/myapp"*). Upon successful login, the login page will redirect the user to the path specified in the "from" parameter (*NB: it can only be a path local to the FQDN, no cross-site*). However, if the "from" parameter is not present in the URL, the login page will redirect the user to the URL specified in AUTH\_SUCCEED\_REDIRECT\_URL
+- **AUTH\_SUCCEED\_REDIRECT\_URL** : The login page supports a URL parameter "from" (*ex: "http://www.example.com/twofactorauth/login/login.php?from=/myapp"*). Upon successful login, the login page will redirect the user to the path specified in the "from" parameter (*NB: it can only be a path local to the FQDN, no cross-site*). However, if the "from" parameter is not present in the URL, the login page will redirect the user to the URL specified in AUTH\_SUCCEED\_REDIRECT\_URL
 
 
 [OPTIONNAL] NGINX auth_request integration
@@ -149,7 +150,7 @@ You'll have to edit your Nginx configuration file. Assuming the TwoFactorAuth ap
 
 Credits
 --------
-Many thanks to Dominique Climenti ([kyos.ch](http://kyos.ch))for his help fixing few bugs (*installation procedure, cookie setting when server is run on a non-standard port, login form security improvement*) as well as discovering an XSS vulnerability (!). This is now all fixed.
+Many thanks to Dominique Climenti ([kyos.ch](http://kyos.ch)) for his help fixing few bugs (*installation procedure, cookie setting when server is run on a non-standard port, login form security improvement*) as well as discovering an XSS vulnerability (!). This is now all fixed.
 
 Todo
 --------

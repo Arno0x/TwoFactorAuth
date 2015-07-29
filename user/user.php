@@ -1,6 +1,6 @@
 <?php
 /**
- * TwoFactorAuth User Administration page - This script provides all management actions available
+ * TwoFactorAuth User Administration page - This script provides all users actions available
  * to a single user
  *
  * @author Arno0x0x - https://twitter.com/Arno0x0x
@@ -76,7 +76,7 @@ try {
                     $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
                     $gauth->getQRCode($username,$secret,$qrcodeimg,QRCODE_TITLE);
                     
-                    $overlay = "showQRCode.php";
+                    $overlay = LIB_DIR."/showQRCode.php";
 		        }
 			    break;
 			    
@@ -94,7 +94,7 @@ try {
                     $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
                     $gauth->getQRCode($username,$secret,$qrcodeimg,QRCODE_TITLE);
                     
-                    $overlay = "showQRCode.php";
+                    $overlay = LIB_DIR."/showQRCode.php";
 		        }
 			    break;
 		} 
@@ -118,17 +118,16 @@ try {
 <body>
 <div class="container" style="margin-top: 10px">
 <div class="row">
-	<div class="col-sm-8 col-sm-offset-2">
+	<div class="col-sm-6 col-sm-offset-3">
 	    <div class="panel panel-default">
 			<div class="panel-heading" style="text-align: center">
 				<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-				<span class="panel-title"><strong>Logged as <?php echo $username; ?></strong></span>
-				<a href="logout.php"><span style="font-size: 1.5em" class="fa fa-power-off pull-right"></span></a>
+				<span class="panel-title"><strong>USER MANAGEMENT</strong></span>
             </div> 	<!-- End of panel heading -->
             <br>
             <form id="userAction" class="form text-center" action="user.php" method="post">
         		<button type="submit" name="action" value="chgPwdForm" class="btn btn-primary"><span class="fa fa-refresh"></span> <span class="fa fa-lock"></span> Change password</button>
-        		<button type="submit" name="action" value="showQRCode" class="btn btn-primary"><span class="fa fa-barcode"></span> Show QR code</button>
+        		<button type="submit" name="action" value="showQRCode" class="btn btn-primary"><span class="fa fa-qrcode"></span> Show QR code</button>
         		<button onclick="return confirmGAScrt();" type="submit" name="action" value="renewGAuthSecret" class="btn btn-primary"><span class="fa fa-refresh"></span> <span class="fa fa-key"></span> Renew Secret</button>
 			</form>
 			<br>

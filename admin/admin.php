@@ -24,7 +24,7 @@ define('INCLUSION_ENABLED',true);
 session_name(SESSION_NAME);
 session_start();
 
-// Check the currently logged user is NOT admin
+// Check whether the currently logged in user is admin or not
 if (!isset($_SESSION["isAdmin"]) || $_SESSION["isAdmin"] !== true) {
 	echo "<h1>FORBIDDEN - You must be logged on with admin rights to access this page</h1>";
 	http_response_code(403);
@@ -81,7 +81,7 @@ try {
                             $randomString = bin2hex(openssl_random_pseudo_bytes (15));
                             $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
                             $gauth->getQRCode($_POST["username"],$secret,$qrcodeimg,QRCODE_TITLE);
-                            $overlay = "showQRCode.php";
+                            $overlay = LIB_DIR."/showQRCode.php";
                         }
 			        }
 			    break;
@@ -120,7 +120,7 @@ try {
                         $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
                         $gauth->getQRCode($_POST["username"],$secret,$qrcodeimg,QRCODE_TITLE);
                         
-                        $overlay = "showQRCode.php";
+                        $overlay = LIB_DIR."/showQRCode.php";
 			        }
 				}
 			    break;
