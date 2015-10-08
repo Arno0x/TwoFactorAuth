@@ -155,3 +155,6 @@ Many thanks to Dominique Climenti ([kyos.ch](http://kyos.ch)) for his help fixin
 Todo
 --------
 Although I already had some useful feedback and fixed some bugs, there might still be some bugs or security concerns to fix. If you have a feature request, feel free to contact me on my twitter page.
+
+![bitcoin](https://dl.dropboxusercontent.com/s/imckco5cg0llfla/bitcoin-icon.png?dl=0) Like this tool ? Tip me with bitcoins !
+![address](https://dl.dropboxusercontent.com/s/9bd5p45xmqz72vw/bc_tipping_address.png?dl=0)
