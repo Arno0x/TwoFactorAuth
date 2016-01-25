@@ -12,10 +12,6 @@
 // Include config file
 require_once("../config.php");
 
-//-----------------------------------------------------
-// Import required libraries
-require_once(DBMANAGER_LIB);
-
 // Allow included script to be included from this script
 define('INCLUSION_ENABLED',true);
 	
@@ -31,6 +27,11 @@ if (!(isset($_SESSION["authenticated"]) && $_SESSION["authenticated"] === true))
 	exit();
 }
 
+//-----------------------------------------------------
+// Import required libraries
+require_once(DBMANAGER_LIB);
+require_once(NOCSRF_LIB);
+
 //------------------------------------------------------
 // Retrieve the currently logged user from the session
 $username = $_SESSION["username"];
@@ -43,6 +44,18 @@ try {
     //------------------------------------------------------
     // Check if an action was requested on the admin page
     if (isset($_POST["action"])) {
+    	
+    	//---------------------------------------------
+    	// Check for a CSRF attempt
+    	if (NoCSRF::check('csrf_token', $_POST, false, 60*10, false) === false) {
+    		echo "<h1>CSRF attempt detected</h1>";
+			http_response_code(403);
+			exit();
+    	}
+    	
+    	// Generate a new CSRF token to use in form hidden field
+		$token = NoCSRF::generate('csrf_token');
+		
 		//---------------------------------------------
 		// Parse all possible actions
 		switch($_POST["action"]) {
@@ -98,7 +111,11 @@ try {
 		        }
 			    break;
 		} 
-	} 
+	}
+	else {
+		// Generate CSRF token to use in form hidden field
+		$token = NoCSRF::generate('csrf_token');
+	}
 } catch (Exception $e) {
     	echo "<h1>ERROR - Impossible to open the user database</h1>";
     	exit();
@@ -126,6 +143,7 @@ try {
             </div> 	<!-- End of panel heading -->
             <br>
             <form id="userAction" class="form text-center" action="user.php" method="post">
+            	<input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
         		<button type="submit" name="action" value="chgPwdForm" class="btn btn-primary"><span class="fa fa-refresh"></span> <span class="fa fa-lock"></span> Change password</button>
         		<button type="submit" name="action" value="showQRCode" class="btn btn-primary"><span class="fa fa-qrcode"></span> Show QR code</button>
         		<button onclick="return confirmGAScrt();" type="submit" name="action" value="renewGAuthSecret" class="btn btn-primary"><span class="fa fa-refresh"></span> <span class="fa fa-key"></span> Renew Secret</button>

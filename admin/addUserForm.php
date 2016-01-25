@@ -28,6 +28,7 @@ if (!defined("INCLUSION_ENABLED")) {
     </div> 	<!-- End of panel heading -->
 
     <form id="addUserForm" action="admin.php" method="post" style="padding: 10px">
+    	<input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
 		<div id="inputgroup1" class="input-group">
 			<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
 			<input type="text" class="form-control" id="username" name="username" placeholder="Username" autofocus>

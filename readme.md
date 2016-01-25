@@ -15,16 +15,17 @@ The app is distributed under the terms of the [GPLv3 licence](http://www.gnu.org
 Dependencies
 ----------------
 
-TwoFactorAuth requires PHP5. It also relies on the following libraries:
+TwoFactorAuth requires PHP5. The following required libraries are included with TwoFactorAuth :
 
 - The [Google Authenticator PHP Class](https://github.com/PHPGangsta/GoogleAuthenticator) writen by Michael Kliewe, to generate GAuth secret and OTP validation. **Beware** that I've modified this class to rely on a local library for QRCode generation rather than GoogleChart URL, so don't install the source library, use the one provided with TwoFactorAuth only.
 
 - The [PHP QRCode library](http://phpqrcode.sourceforge.net/) written by Dominik Dzienia, for 2D QRCode generation.
 
+- [NoSCRF](https://github.com/BKcore/NoCSRF) written by Thibaut Despoulain, for CSRF attack prevention.
+
 **Both these libraries are included** in the TwoFactorAuth package so you don't have to install them :-)
 
 TwoFactorAuth also relies on some PHP5 libraries that you'll have to install on your own:
-
 - The GD library (on debian like systems: sudo apt-get install php5-gd)
 - The SQLite3 library (on debian like systems: sudo apt-get install php5-sqlite)
 
@@ -105,6 +106,13 @@ Edit the **/twofactorauth/config.php** file to match your needs. Most settings c
 - **SESSION_NAME** : This is the PHP session name (*also used for the session cookie*). You can set it to your own application session name if you plan to re-use it for further user authorization and profile
 
 - **AUTH\_SUCCEED\_REDIRECT\_URL** : The login page supports a URL parameter "from" (*ex: "http://www.example.com/twofactorauth/login/login.php?from=/myapp"*). Upon successful login, the login page will redirect the user to the path specified in the "from" parameter (*NB: it can only be a path local to the FQDN, no cross-site*). However, if the "from" parameter is not present in the URL, the login page will redirect the user to the URL specified in AUTH\_SUCCEED\_REDIRECT\_URL
+
+Security aspects
+--------------
+The user database must be protected against remote access. To achieve this, you can either :
+- **Before** the installation: change the USER_SQL_DATABASE_FILE setting in the config.php and set it to a path that is not served by your web server
+or
+- **After** the installation: prevent remote access to the db/ directory using a web server specific directive (.htaccess with Apache, or location specific 'deny all;' with Nginx)
 
 
 [OPTIONNAL] NGINX auth_request integration

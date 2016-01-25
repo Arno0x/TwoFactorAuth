@@ -12,11 +12,7 @@
 // Include config file
 require_once("../config.php");
 
-//-----------------------------------------------------
-// Import required libraries
-require_once(DBMANAGER_LIB);
-
-// Allow included script to be included from this script
+// Allow included scripts to be included from this script
 define('INCLUSION_ENABLED',true);
 	
 //------------------------------------------------------
@@ -31,6 +27,11 @@ if (!isset($_SESSION["isAdmin"]) || $_SESSION["isAdmin"] !== true) {
 	exit();
 }
 
+//-----------------------------------------------------
+// Import required libraries
+require_once(DBMANAGER_LIB);
+require_once(NOCSRF_LIB);
+
 //------------------------------------------------------
 // Main processing
 try {
@@ -39,18 +40,31 @@ try {
     //------------------------------------------------------
     // Check if an action was requested on the admin page
     if (isset($_POST["action"])) {
+    	//---------------------------------------------
+    	// Check for a CSRF attempt
+    	if (NoCSRF::check('csrf_token', $_POST, false, 60*10, false) === false) {
+    		echo "<h1>CSRF attempt detected</h1>";
+			http_response_code(403);
+			exit();
+    	}
+    	
+    	// Generate a new CSRF token to use in form hidden field
+		$token = NoCSRF::generate('csrf_token');
+    	
 		//---------------------------------------------
 		// Parse all possible actions
 		switch($_POST["action"]) {
 			// Delete all users table
 			case "deleteDatabase":
-					//$dbManager->deleteAllUsers();
+					$dbManager->deleteAllUsers();
 				break;
 			
 			// Delete a user
 			case "deleteUser":
 				if (isset($_POST["username"])) {
-					if(!$dbManager->deleteUser($_POST["username"])) {
+					// Sanitizing userName
+					$userName  = htmlspecialchars($_POST["username"]);
+					if(!$dbManager->deleteUser($userName)) {
 						$message = "[ERROR] Could not delete username ".$_POST["username"];
 					}
 				}
@@ -72,11 +86,14 @@ try {
                         
                         isset($_POST['isAdmin']) ? $isAdmin = 1 : $isAdmin = 0;
                         
+                        // Sanitizing userName
+                        $userName = htmlspecialchars($_POST["username"]);
+                        
                         // Generate a random secret
                         $secret = $gauth->createSecret();
                         
                         // Add user to the database
-                        if ($dbManager->addUser($_POST["username"],$_POST["password"],$secret,$isAdmin)) {
+                        if ($dbManager->addUser($userName,$_POST["password"],$secret,$isAdmin)) {
                         	// Create the QRCode as PNG image
                             $randomString = bin2hex(openssl_random_pseudo_bytes (15));
                             $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
@@ -140,12 +157,16 @@ try {
                         $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
                         $gauth->getQRCode($_POST["username"],$secret,$qrcodeimg,QRCODE_TITLE);
                         
-                        $overlay = "showQRCode.php";
+                        $overlay = LIB_DIR."showQRCode.php";
 			        }
 				}
 			    break;
 		} 
-	} 
+	}
+	else {
+		// Generate CSRF token to use in form hidden field
+		$token = NoCSRF::generate('csrf_token');
+	}
 } catch (Exception $e) {
     	echo "<h1>ERROR - Impossible to open the user database</h1>";
     	exit();
@@ -191,7 +212,13 @@ try {
                 </tbody>
             </table>
             <br>
-            <div class="text-center"><form action="admin.php" method="post"><button type="submit" name="action" value="addUserForm" class="btn btn-success"><span class="fa fa-user-plus supersize1"></span> Add user</button></form></div>
+            <div class="text-center">
+	            <form action="admin.php" method="post">
+	            	<input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
+	            	<button type="submit" name="action" value="addUserForm" class="btn btn-success">
+	            	<span class="fa fa-user-plus supersize1"></span> Add user</button>
+	            </form>
+	        </div>
             <br>
             <?php if (isset($message)) echo "<div class='message'>".$message."</div>";	?>
 

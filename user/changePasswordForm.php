@@ -26,6 +26,7 @@ if (!defined("INCLUSION_ENABLED")) {
     </div> 	<!-- End of panel heading -->
 
     <form id="changePasswordForm" action="user.php" method="post" style="padding: 10px">
+    	<input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
 		<div id="inputgroup1" class="input-group">
 			<span class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>
 			<input type="password" class="form-control" id="password" name="password" placeholder="New password">

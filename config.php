@@ -28,6 +28,9 @@ define('GAUTH_LIB',LIB_DIR.'googleAuthenticator.php');
 // Setting the path for the DBManager library
 define('DBMANAGER_LIB',LIB_DIR.'dbManager.php');
 
+// Setting the path for the NoCSRF library
+define('NOCSRF_LIB',LIB_DIR.'nocsrf.php');
+
 //========================================================================
 // QRCode generation settings
 //========================================================================
