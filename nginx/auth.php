@@ -74,11 +74,11 @@ session_start();
 //====================================================
 // Check if the authentication has been completed
 if (isset($_SESSION["authenticated"]) && $_SESSION["authenticated"] === true) {
-    http_response_code(200);
+	http_response_code(200);
 }
 else {
-	    // Else return an HTTP 401 status code
-	    session_destroy();
+	// Else return an HTTP 401 status code
+	session_destroy();
 		http_response_code(401);
 	}
 ?>
