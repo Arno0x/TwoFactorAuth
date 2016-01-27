@@ -30,12 +30,19 @@ if (file_exists('../config.php')) {
 
 // * ========================= DEBUG BLOCK ========================== 
 
-if (defined('TFA_DEBUG_ON') AND TFA_DEBUG_ON)
+if (defined('TFA_NGINX_DEBUG') AND TFA_NGINX_DEBUG)
 {
 	$dir = dirname(__FILE__);
 	$debugFileName = $dir.DIRECTORY_SEPARATOR."debug.log";
+	$canLog = false;
 
-	if (is_writable($dir) AND (!file_exists($logName) OR is_writable($logName))) {
+	if (!file_exists($logName)) {
+		$canLog = is_writable($dir);
+	} else if (is_writable($logName))) {
+		$canLog = true;
+	}
+
+	if ($canLog) {
 		$debugHandle = fopen ($debugFileName ,"a");
 
 		foreach ($_SERVER as $key => $value) {
