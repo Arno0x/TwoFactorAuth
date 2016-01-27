@@ -37,7 +37,7 @@ if (!isset($_POST["username"]) || !isset($_POST["password"])) {
 else {
     //------------------------------------------------------
     // Retrieve and store form parameters
-    $username = $_POST["username"];
+    $username = htmlspecialchars($_POST["username"], ENT_QUOTES);
     $password = $_POST["password"];
     
     $message = "";
