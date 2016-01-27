@@ -69,7 +69,7 @@ try {
 			
 			// Delete a user
 			case "deleteUser":
-				if ($userName)) {
+				if ($userName) {
 					if(!$dbManager->deleteUser($userName)) {
 						$message = "[ERROR] Could not delete username ".$userName;
 					}
