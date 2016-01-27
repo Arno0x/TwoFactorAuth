@@ -52,11 +52,11 @@ try {
 		$token = NoCSRF::generate('csrf_token');
 
 	// Santizing userName
-	$userName = '';
+	$username = $userName = '';
 
 	if (isset($_POST['username']))
 	{
-		$userName = htmlspecialchars($_POST['username'], ENT_QUOTES);
+		$username = $userName = htmlspecialchars($_POST['username'], ENT_QUOTES);
 	}
     	
 		//---------------------------------------------
