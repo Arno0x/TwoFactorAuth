@@ -13,21 +13,32 @@
 
 class TFAErrorHandler
 {
-  public static function handle_fatal_error() {
-    $error = error_get_last();
+	public static function handle_fatal_error() {
+		$error = @error_get_last();
 
-    if ($error) {
-      switch ($error['type']) {
-        case E_ERROR:
-        case E_PARSE:
-        case E_CORE_ERROR:
-        case E_COMPILE_ERROR:
-        case E_USER_ERROR:
-        case E_RECOVERABLE_ERROR:
-          // don't authenticate!!
-          http_response_code(401);
-          break;
-      }
-    }
-  }
+		if ($error) {
+			switch ($error['type']) {
+				case E_ERROR:
+				case E_PARSE:
+				case E_CORE_ERROR:
+				case E_COMPILE_ERROR:
+				case E_USER_ERROR:
+				case E_RECOVERABLE_ERROR:
+				{
+					// don't authenticate!!
+					http_response_code(401);
+					break;
+				}
+			}
+		}
+	}
+
+	public static function handle_exception($e) {
+		// don't authenticate!!
+		http_response_code(401);
+	}
+
+	public static function handle_php_error($error_type, $error_string, $file, $line) {
+
+	}
 }
