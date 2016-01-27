@@ -14,7 +14,10 @@
 if (file_exists('../config.php')) {
 	// don't authenticate whenever there is a fatal error in the config file
 	require_once("../lib/TFAErrorHandler.php");
+
 	register_shutdown_function(array('TFAErrorHandler', 'handle_fatal_error'));
+	set_exception_handler(array('TFAErrorHandler', 'handle_exception'));
+	set_error_handler(array('TFAErrorHandler', 'handle_php_error'));
 
 	try {
 		require_once("../config.php");
