@@ -27,22 +27,28 @@ class DBManager extends SQLite3 {
     // @param isAdmin: optionnal, specifies if the user is an admin. Defaults to 0. 
     // @return bool : TRUE if no error, FALSE otherwise
     public function addUser ($username, $password, $gauthSecret, $isAdmin = 0) {
+
+		// Prepare variables before the query
+		$passwordHash = hash('sha256',$password);
         
-        // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
-        $passwordHash = hash('sha256',$password);
-        
-        // Prepare SQL query
-        $sqlQuery = "INSERT INTO USERS (USERNAME ,PASSWORDHASH ,GAUTHSECRET ,ISADMIN) ";
-        $sqlQuery .= "VALUES ('".$username."','".$passwordHash."','".$gauthSecret."',".$isAdmin.");";
-        
-        // Perform SQL query
-        if(!($ret = $this->exec($sqlQuery))) {
-            return false;
-        }
-        else {
-            return true;
-        }
+		// Prepare SQL query
+		$sqlQuery = "INSERT INTO USERS (USERNAME ,PASSWORDHASH ,GAUTHSECRET ,ISADMIN) ";
+		$sqlQuery .= "VALUES (:username, :passwordhash, :secret, :isadmin);";
+
+		$stmt = $this->prepare($sqlQuery);
+
+		if ($stmt) {
+			$stmt->bindValue(':username', $username, SQLITE3_TEXT);
+			$stmt->bindValue(':passwordhash', $passwordHash, SQLITE3_TEXT);
+			$stmt->bindValue(':secret', $gauthSecret, SQLITE3_TEXT);
+			$stmt->bindValue(':isadmin', $isAdmin, SQLITE3_INTEGER);
+
+			if ($stmt->execute()) {
+				return true;
+			}
+		}
+
+		return false;
     }
     
     //--------------------------------------------------------
@@ -51,19 +57,20 @@ class DBManager extends SQLite3 {
     // @return bool : TRUE if the user was deleted, FALSE otherwise
     public function deleteUser ($username) {
         
-        // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
-        
-        // Prepare SQL query
-        $sqlQuery = "DELETE from USERS where USERNAME='".$username."';";
+		// Prepare SQL query
+		$sqlQuery = "DELETE from USERS where USERNAME=:username;";
 
-        // Perform SQL query
-        if(!($ret = $this->exec($sqlQuery))) {
-            return false;
-        }
-        else {
-            return true;
-        }
+		$stmt = $this->prepare($sqlQuery);
+
+		if ($stmt) {
+			$stmt->bindValue(':username', $username, SQLITE3_TEXT);
+
+			if ($stmt->execute()) {
+				return true;
+			}
+		}
+
+		return false;
     }
     
     //--------------------------------------------------------
@@ -88,41 +95,57 @@ class DBManager extends SQLite3 {
     // @param username : The username
     // @return string : the password hash, or FALSE if there was an error
     public function getPasswordHash ($username) {
-        
-        // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
-        
-        // Prepare SQL query
-        $sqlQuery = "SELECT PASSWORDHASH from USERS where USERNAME='".$username."';";
 
-        // Perform SQL query
-        if(!($ret = $this->querySingle($sqlQuery))) {
-            return false;
-        }
-        else {
-            return $ret;
-        }
+		return $this->getUserData('PASSWORDHASH', $username);
     }
-    
+
+	//--------------------------------------------------------
+	// Get a specific column of a given user
+	// @param column : The column
+	// @param username : The user's name
+	// @return mixed
+	protected function getUserData ($column, $username) {
+
+		switch ($column) {
+			case 'PASSWORDHASH':
+			case 'GAUTHSECRET':
+			case 'ISADMIN':
+			case '*':
+				break;
+
+			default:
+				return false;
+		}
+
+		$sqlQuery = "SELECT $column from USERS where USERNAME=:username;";
+
+		$stmt = $this->prepare($sqlQuery);
+
+		if ($stmt) {
+			$stmt->bindValue(':username', $username, SQLITE3_TEXT);
+
+			$res = $stmt->execute();
+			$row = $res->fetchArray(SQLITE3_ASSOC);
+
+			if ($row) {
+				if ($column == '*') {
+					return $row;
+				}
+
+				return $row["$column"];
+			}
+		}
+
+		return false;
+	}
+
     //--------------------------------------------------------
     // Get the Google Auth secret of a given user
     // @param username : The username
     // @return string : the Google Auth secret, or FALSE if there was an error
     public function getGauthSecret ($username) {
-        
-        // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
-        
-        // Prepare SQL query
-        $sqlQuery = "SELECT GAUTHSECRET from USERS where USERNAME='".$username."';";
 
-        // Perform SQL query
-        if(!($ret = $this->querySingle($sqlQuery))) {
-            return false;
-        }
-        else {
-            return $ret;
-        }
+		return $this->getUserData('GAUTHSECRET', $username);
     }
     
     //--------------------------------------------------------
@@ -131,19 +154,13 @@ class DBManager extends SQLite3 {
     // @return int : the admin status, or FALSE if there was an error
     public function getAdminStatus ($username) {
         
-        // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
-        
-        // Prepare SQL query
-        $sqlQuery = "SELECT ISADMIN from USERS where USERNAME='".$username."';";
+		$status = $this->getUserData('ISADMIN', $username);
 
-        // Perform SQL query
-        if(($ret = $this->querySingle($sqlQuery)) === false) {
-            return false;
-        }
-        else {
-            return (int)$ret;
-        }
+		if ($status) {
+			return (int)$status;
+		}
+
+		return false;
     }
     
     //--------------------------------------------------------
@@ -172,20 +189,8 @@ class DBManager extends SQLite3 {
     // @param username : The username
     // @return array : the password hash and the Google Auth secret, or FALSE if there was an error
     public function getPasswordHashAndGauthSecret ($username) {
-        
-        // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
-        
-        // Prepare SQL query
-        $sqlQuery = "SELECT PASSWORDHASH, GAUTHSECRET from USERS where USERNAME='".$username."';";
 
-        // Perform SQL query
-        if(!($ret = $this->querySingle($sqlQuery, true))) {
-            return false;
-        }
-        else {
-        	 return $ret;
-        }
+		return $this->getUserData('*', $username);
     }
     
     //--------------------------------------------------------
@@ -196,20 +201,44 @@ class DBManager extends SQLite3 {
     public function updatePassword ($username, $password) {
         
         // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
         $passwordHash = hash('sha256',$password);
         
-        // Prepare SQL query
-        $sqlQuery = "UPDATE USERS set PASSWORDHASH='".$passwordHash."' where USERNAME='".$username."';";
-
-        // Perform SQL query
-        if(!($ret = $this->exec($sqlQuery))) {
-            return false;
-        }
-        else {
-            return true;
-        }
+		return $this->updateUserData('PASSWORDHASH', $passwordHash, $username);
     }
+
+	//--------------------------------------------------------
+	// Get a specific column of a given user
+	// @param column : The column
+	// @param value : The updated value for column
+	// @param username : The user's name
+	// @return mixed
+	protected function updateUserData ($column, $value, $username) {
+
+		switch ($column) {
+			case 'PASSWORDHASH':
+			case 'GAUTHSECRET':
+			case 'ISADMIN':
+				break;
+
+			default:
+				return false;
+		}
+
+		$sqlQuery = "UPDATE USERS SET $column=:uservalue where USERNAME=:username;";
+
+		$stmt = $this->prepare($sqlQuery);
+
+		if ($stmt) {
+			$stmt->bindValue(':uservalue', $value, ($column == 'ISADMIN' ? SQLITE3_INTEGER : SQLITE3_TEXT));
+			$stmt->bindValue(':username', $username, SQLITE3_TEXT);
+
+			if ($stmt->execute()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
     
     //--------------------------------------------------------
     // Updates the Google Auth secret of a user
@@ -217,20 +246,8 @@ class DBManager extends SQLite3 {
     // @param gauthSecret; the new Google Auth secret for the user
     // @return bool : TRUE if the Google Auth secret was updated, FALSE otherwise
     public function updateGauthSecret ($username, $gauthSecret) {
-        
-        // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
 
-        // Prepare SQL query
-        $sqlQuery = "UPDATE USERS set GAUTHSECRET='".$gauthSecret."' where USERNAME='".$username."';";
-
-        // Perform SQL query
-        if(!($ret = $this->exec($sqlQuery))) {
-            return false;
-        }
-        else {
-            return true;
-        }
+		return $this->updateUserData('GAUTHSECRET', $gauthSecret, $username);
     }
     
     //--------------------------------------------------------
@@ -239,21 +256,8 @@ class DBManager extends SQLite3 {
     // @param isAdmin; the new admin status for the user
     // @return bool : TRUE if the admin status was updated, FALSE otherwise
     public function updateAdminStatus ($username, $isAdmin) {
-        
-        // Prepare variables before the query
-        $username = SQLite3::escapeString ($username);
-        if ($isAdmin !== 0 && $isAdmin !== 1) return false;
 
-        // Prepare SQL query
-        $sqlQuery = "UPDATE USERS set ISADMIN=".$isAdmin." where USERNAME='".$username."';";
-
-        // Perform SQL query
-        if(!($ret = $this->exec($sqlQuery))) {
-            return false;
-        }
-        else {
-            return true;
-        }
+		return $this->updateUserData('ISADMIN', $isAdmin, $username);
     }
 }
 ?>
