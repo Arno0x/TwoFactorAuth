@@ -124,6 +124,8 @@ The Nginx auth_request module allows authentication of each request against an i
 
 This mechanism is a perfect replacement for the auth_basic authentication and allows for custom made mechanism, written in any language. It also allows a whole website (not per application) authentication mechanism.
 
+WARNING: Whenever you save changes to TwoFactorAuth's config.php, always check for error messages at /twofactorauth/login/login.php to ensure you did not make typos in the file. If PHP cannot parse the file, Nginx will consider all users to be authenticated!
+
 TwoFactorAuth provides such a script: **/twofactorauth/nginx/auth.php**.
 
 You'll have to edit your Nginx configuration file. Assuming the TwoFactorAuth application was deployed in a location named /twofactorauth/ on your webserver, add the following line under the "server" directive:
@@ -144,7 +146,7 @@ You'll have to edit your Nginx configuration file. Assuming the TwoFactorAuth ap
     }
  
     location /twofactorauth/db/ {
-				deny all;
+		deny all;
 	}
 	
     location /twofactorauth/login/ {
