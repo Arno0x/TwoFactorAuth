@@ -48,9 +48,9 @@ if (!defined("INCLUSION_ENABLED")) {
             </ul>
             <span class="fa fa-exclamation-triangle"></span> Current settings from the config.php :<br>
             <ul>
-                <li> SESSION_NAME : <strong><?php echo SESSION_NAME; ?></strong></li>
-                <li> QRCODE_TITLE : <strong><?php echo QRCODE_TITLE; ?></strong></li>
-                <li> AUTH_SUCCEED_REDIRECT_URL : <strong><?php echo AUTH_SUCCEED_REDIRECT_URL; ?></strong></li>
+                <li> SESSION_NAME : <strong><?php echo htmlspecialchars(SESSION_NAME, ENT_QUOTES); ?></strong></li>
+                <li> QRCODE_TITLE : <strong><?php echo htmlspecialchars(QRCODE_TITLE, ENT_QUOTES); ?></strong></li>
+                <li> AUTH_SUCCEED_REDIRECT_URL : <strong><?php echo htmlspecialchars(AUTH_SUCCEED_REDIRECT_URL, ENT_QUOTES); ?></strong></li>
             </ul>
             If these settings do not match your expectations, please modify the config.php before proceeding.<br>
             <br>
