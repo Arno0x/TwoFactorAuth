@@ -50,6 +50,14 @@ try {
     	
     	// Generate a new CSRF token to use in form hidden field
 		$token = NoCSRF::generate('csrf_token');
+
+	// Santizing userName
+	$userName = '';
+
+	if (isset($_POST['username']))
+	{
+		$userName = htmlspecialchars($_POST['username'], ENT_QUOTES);
+	}
     	
 		//---------------------------------------------
 		// Parse all possible actions
@@ -61,11 +69,9 @@ try {
 			
 			// Delete a user
 			case "deleteUser":
-				if (isset($_POST["username"])) {
-					// Sanitizing userName
-					$userName  = htmlspecialchars($_POST["username"]);
+				if ($userName)) {
 					if(!$dbManager->deleteUser($userName)) {
-						$message = "[ERROR] Could not delete username ".$_POST["username"];
+						$message = "[ERROR] Could not delete username ".$userName;
 					}
 				}
 				break;
@@ -77,7 +83,7 @@ try {
 			
 			// Add a user to the system
 			case "addUser":
-			        if (isset($_POST["username"]) && isset($_POST["password"])) {
+			        if ($userName && isset($_POST["password"])) {
 			            
 			            require_once(GAUTH_LIB);
 			            
@@ -85,9 +91,6 @@ try {
                     	$gauth = new GoogleAuthenticator();
                         
                         isset($_POST['isAdmin']) ? $isAdmin = 1 : $isAdmin = 0;
-                        
-                        // Sanitizing userName
-                        $userName = htmlspecialchars($_POST["username"]);
                         
                         // Generate a random secret
                         $secret = $gauth->createSecret();
@@ -97,7 +100,7 @@ try {
                         	// Create the QRCode as PNG image
                             $randomString = bin2hex(openssl_random_pseudo_bytes (15));
                             $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
-                            $gauth->getQRCode($_POST["username"],$secret,$qrcodeimg,QRCODE_TITLE);
+                            $gauth->getQRCode($userName,$secret,$qrcodeimg,QRCODE_TITLE);
                             $overlay = LIB_DIR."/showQRCode.php";
                         }
 			        }
@@ -105,37 +108,36 @@ try {
 			    
 			// Show the change password form for the selected user
 			case "chgPwdForm":
-			    if (isset($_POST["username"])) {
-			    	$username = $_POST["username"];
+			    if ($userName) {
 			        $overlay = "changePasswordForm.php";
 				}
 			    break;
 			    
 			// Show the change password form for the selected user
 			case "changePassword":
-			    if (isset($_POST["username"]) && isset($_POST["password"])) {
-			    	if($dbManager->updatePassword($_POST["username"],$_POST["password"])) {
-			    	    $message = "[SUCCESS] Password successfully changed for user ".$_POST["username"];
+			    if ($userName && isset($_POST["password"])) {
+			    	if($dbManager->updatePassword($userName,$_POST["password"])) {
+			    	    $message = "[SUCCESS] Password successfully changed for user ".$userName;
 			    	}
 			    	else {
-			    	    $message = "[ERROR] Could not change password for user ".$_POST["username"].". Impossible to write into the user database";
+			    	    $message = "[ERROR] Could not change password for user ".$userName.". Impossible to write into the user database";
 			    	}
 				}
 			    break;
 			
 			// Show the QRCode, for current GAuth secret, for selected user
 			case "showQRCode":
-			    if (isset($_POST["username"])) {
+			    if ($userName) {
 			        require_once(GAUTH_LIB);
 			        
 			        // Create GoogleAuth object
     	            $gauth = new GoogleAuthenticator();
 			        
-			        if (($secret = $dbManager->getGauthSecret($_POST["username"]))) {
+			        if (($secret = $dbManager->getGauthSecret($userName))) {
     			        // Create the QRCode as PNG image
                         $randomString = bin2hex(openssl_random_pseudo_bytes (15));
                         $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
-                        $gauth->getQRCode($_POST["username"],$secret,$qrcodeimg,QRCODE_TITLE);
+                        $gauth->getQRCode($userName,$secret,$qrcodeimg,QRCODE_TITLE);
                         
                         $overlay = LIB_DIR."/showQRCode.php";
 			        }
@@ -144,18 +146,18 @@ try {
 			    
 			// Renew the GAuth secret  for selected user and show the corresponding QRCode
 			case "renewGAuthSecret":
-			    if (isset($_POST["username"])) {
+			    if ($userName) {
 			    	require_once(GAUTH_LIB);
 			        
 			        // Create GoogleAuth object
     	            $gauth = new GoogleAuthenticator();
     	            $secret = $gauth->createSecret();
     	            
-			        if (($dbManager->updateGauthSecret($_POST["username"],$secret))) {
+			        if (($dbManager->updateGauthSecret($userName,$secret))) {
     			        // Create the QRCode as PNG image
                         $randomString = bin2hex(openssl_random_pseudo_bytes (15));
                         $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
-                        $gauth->getQRCode($_POST["username"],$secret,$qrcodeimg,QRCODE_TITLE);
+                        $gauth->getQRCode($userName,$secret,$qrcodeimg,QRCODE_TITLE);
                         
                         $overlay = LIB_DIR."showQRCode.php";
 			        }
