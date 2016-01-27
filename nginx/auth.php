@@ -41,7 +41,7 @@ if (defined('TFA_NGINX_DEBUG') AND TFA_NGINX_DEBUG)
 
 	if (!file_exists($logName)) {
 		$canLog = is_writable($dir);
-	} else if (is_writable($logName))) {
+	} else if (is_writable($logName)) {
 		$canLog = true;
 	}
 
