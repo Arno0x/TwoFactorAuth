@@ -21,7 +21,7 @@ $safe_from = '';
 
 if (isset($_GET['from']))
 {
-	$safe_from = '?from=' . htmlspecialchars(urlencode(stripslashes($_GET['from'])));
+	$safe_from = '?from=' . htmlspecialchars(urlencode(stripslashes($_GET['from'])), ENT_QUOTES);
 }
 ?>
 <!DOCTYPE html>
