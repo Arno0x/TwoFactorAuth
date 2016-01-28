@@ -67,7 +67,7 @@ try {
 			// Show the change password form for the selected user
 			case "changePassword":
 			    if (isset($_POST["password"])) {
-			    	if($dbManager->updatePassword($username,$username)) {
+			    	if($dbManager->updatePassword($username,$_POST['password'])) {
 			    	    $message = "[SUCCESS] Password successfully changed for user ".$username;
 			    	}
 			    	else {
