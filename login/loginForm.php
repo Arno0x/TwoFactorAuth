@@ -16,6 +16,13 @@ if (!defined("INCLUSION_ENABLED")) {
     echo "<h1>FORBIDDEN - This page cannot be called directly</h1>";
     exit();
 }
+
+$safe_from = '';
+
+if (isset($_GET['from']))
+{
+	$safe_from = '?from=' . htmlspecialchars(urlencode(stripslashes($_GET['from'])), ENT_QUOTES);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -59,7 +66,7 @@ html {
 				<span class="panel-title"><strong>LOGIN</strong></span>
             </div> 	<!-- End of panel heading -->
 		
-		    <form id="connectionForm" action="login.php" method="post" style="padding: 10px">
+		    <form id="connectionForm" action="login.php<?php echo $safe_from; ?>" method="post" style="padding: 10px">
 				<div id="inputgroup1" class="input-group">
 					<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
 					<input type="text" class="form-control" placeholder="Username" id="username" name="username" autocomplete="off" autofocus>
@@ -79,7 +86,6 @@ html {
 				<div id="tokenFeedback" class="text-center feedback"></div>
 				<br>
 				<div class="text-center"><button id="submit" type="submit" class="btn btn-sm btn-primary">Login <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span></button></div>
-			<?php if (isset($_GET["from"])) { echo "<input type='hidden' name='from' value='".urlencode($_GET["from"])."'>"; } ?>
 			</form>
 			<?php
 			    if (isset($error)) {

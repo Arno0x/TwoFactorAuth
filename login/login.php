@@ -30,7 +30,7 @@ if (!isset($_POST["username"]) || !isset($_POST["password"]) || !isset($_POST["t
 else {
     //------------------------------------------------------
     // Retrieve and store form parameters
-    $username = htmlspecialchars($_POST["username"]);
+    $username = htmlspecialchars($_POST["username"], ENT_QUOTES);
     $password = $_POST["password"];
     $token = $_POST["token"];
     
@@ -84,8 +84,12 @@ else {
 	        
 	        //--------------------------------------------------
 	        // Checking which URL we should redirect the user to
-	        if (isset($_POST["from"])) {
-	        	$from = urldecode($_POST["from"]);
+	        if (isset($_GET['from'])) {
+	        	$from = $_GET['from'];
+			if (preg_match('#^(?:https?:)?//#', $_GET['from'], $m)) {
+				$url = parse_url($_GET['from']);
+				$from = $url['path'] . (!empty($url['query']) ? '?' . $url['query'] : '') . (!empty($url['fragment']) ? '#' . $url['fragment'] : '');
+			}
 	            $redirectTo = ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on")? "https://" : "http://").$_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$from;
 	        }
 	        else {
