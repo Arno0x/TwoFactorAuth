@@ -161,7 +161,7 @@ You'll have to edit your Nginx configuration file. Assuming the TwoFactorAuth ap
 Credits
 --------
 Many thanks to Dominique Climenti ([kyos.ch](http://kyos.ch)) for his help fixing few bugs (*installation procedure, cookie setting when server is run on a non-standard port, login form security improvement*) as well as discovering an XSS vulnerability (!).
-Many thynks to David Carliez from Toreon for discovering and help fixing a stored XSS.
+Many thanks to David Carliez (Toreon) too for discovering and help fixing a stored XSS.
 This is now all fixed.
 
 Todo
