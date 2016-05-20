@@ -46,7 +46,12 @@ if (defined('TFA_NGINX_DEBUG') AND TFA_NGINX_DEBUG)
 	}
 
 	if ($canLog) {
-		$debugHandle = fopen ($debugFileName ,"a");
+		$mode = "a";
+		if (file_exists($debugFileName) AND filesize($debugFileName) > 104857600)
+		{
+			$mode = "w";
+		}
+		$debugHandle = fopen ($debugFileName, $mode);
 
 		foreach ($_SERVER as $key => $value) {
 			if (is_array($value)) {
