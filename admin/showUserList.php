@@ -29,7 +29,7 @@ else {
         echo "<tr>";
         echo "<td style=\"vertical-align: middle;\">".$userName."</td>";
         echo "<td style=\"vertical-align: middle;\" class=\"text-center\">".(($params['ISADMIN'] === 0)? "No" : "Yes")."</td>";
-        echo "<td style=\"vertical-align: middle;\" class=\"text-center\">".(($params['INSECURE'] === 0)? "No" : "Yes")."</td>";
+        echo "<td style=\"vertical-align: middle;\" class=\"text-center\">".(($params['PASSTHROUGH'] === 0)? "No" : "Yes")."</td>";
         echo "<td style=\"vertical-align: middle;\" class=\"text-center\">".$params['IP']."</td>";
         echo "<td class=\"text-center\">";
         echo "<form id=\"userAction\" action=\"admin.php\" method=\"post\">";

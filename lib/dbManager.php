@@ -26,14 +26,14 @@ class DBManager extends SQLite3 {
     // @param gauthSecret: the user's Gauth secret to add
     // @param isAdmin: optionnal, specifies if the user is an admin. Defaults to 0. 
     // @return bool : TRUE if no error, FALSE otherwise
-    public function addUser ($username, $password, $gauthSecret, $isAdmin = 0, $Insecure = 0) {
+    public function addUser ($username, $password, $gauthSecret, $isAdmin = 0, $passthrough = 0) {
 
 		// Prepare variables before the query
 		$passwordHash = hash('sha256',$password);
         
 		// Prepare SQL query
-		$sqlQuery = "INSERT INTO USERS (USERNAME ,PASSWORDHASH ,GAUTHSECRET ,ISADMIN, INSECURE) ";
-		$sqlQuery .= "VALUES (:username, :passwordhash, :secret, :isadmin, :insecure);";
+		$sqlQuery = "INSERT INTO USERS (USERNAME ,PASSWORDHASH ,GAUTHSECRET ,ISADMIN, PASSTHROUGH) ";
+		$sqlQuery .= "VALUES (:username, :passwordhash, :secret, :isadmin, :passthrough);";
 
 		$stmt = $this->prepare($sqlQuery);
 
@@ -42,7 +42,7 @@ class DBManager extends SQLite3 {
 			$stmt->bindValue(':passwordhash', $passwordHash, SQLITE3_TEXT);
 			$stmt->bindValue(':secret', $gauthSecret, SQLITE3_TEXT);
 			$stmt->bindValue(':isadmin', $isAdmin, SQLITE3_INTEGER);
-			$stmt->bindValue(':insecure', $Insecure, SQLITE3_INTEGER);
+			$stmt->bindValue(':passthrough', $passthrough, SQLITE3_INTEGER);
 
 			if ($stmt->execute()) {
 				return true;
@@ -105,7 +105,7 @@ class DBManager extends SQLite3 {
     public function getIpList () {
         
         // Prepare SQL query
-		$sqlQuery = "SELECT DISTINCT IP from USERS where INSECURE = 1";
+		$sqlQuery = "SELECT DISTINCT IP from USERS where PASSTHROUGH = 1";
 
         // Perform SQL query
         if(!($ret = $this->query($sqlQuery))) {
@@ -189,7 +189,7 @@ class DBManager extends SQLite3 {
     public function getUserList () {
         
         // Prepare SQL query
-        $sqlQuery = "SELECT USERNAME,ISADMIN,INSECURE,IP from USERS;";
+        $sqlQuery = "SELECT USERNAME,ISADMIN,PASSTHROUGH,IP from USERS;";
 
         // Perform SQL query
         if(!($ret = $this->query($sqlQuery))) {
