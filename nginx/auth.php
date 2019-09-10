@@ -80,6 +80,7 @@ if (!defined('SESSION_NAME') OR !SESSION_NAME) {
 // Restore an existing session
 session_name(SESSION_NAME);
 session_start();
+require_once(DBMANAGER_LIB);
 $dbManager = new DBManager(USER_SQL_DATABASE_FILE);
 $ListOfIpAddress = $dbManager->getIpList();
 $dbManager->close();
