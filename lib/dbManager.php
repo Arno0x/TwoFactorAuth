@@ -105,7 +105,7 @@ class DBManager extends SQLite3 {
     public function getIpList () {
         
         // Prepare SQL query
-		$sqlQuery = "SELECT DISTINCT IP from USERS where PASSTHROUGH = 1";
+		$sqlQuery = "SELECT DISTINCT IP from USERS where PASSTHROUGH = 1 AND IP != '' AND IP IS NOT NULL";
 
         // Perform SQL query
         if(!($ret = $this->query($sqlQuery))) {
@@ -114,7 +114,7 @@ class DBManager extends SQLite3 {
         else {
         	$result = array();
         	while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
-        			$result[$row["IP"]];
+        			$result[$row["IP"]] = true;
         	}
 			return $result;
         }
