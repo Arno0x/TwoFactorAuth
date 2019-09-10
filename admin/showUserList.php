@@ -25,10 +25,12 @@ if (!($userList = $dbManager->getUserList())) {
 else {
     //--------------------------------------------------------
     // Create the list of users as a table content
-    foreach ($userList as $userName => $isAdmin) {
+    foreach ($userList as $userName => $params) {
         echo "<tr>";
         echo "<td style=\"vertical-align: middle;\">".$userName."</td>";
-        echo "<td style=\"vertical-align: middle;\" class=\"text-center\">".(($isAdmin === 0)? "No" : "Yes")."</td>";
+        echo "<td style=\"vertical-align: middle;\" class=\"text-center\">".(($params['ISADMIN'] === 0)? "No" : "Yes")."</td>";
+        echo "<td style=\"vertical-align: middle;\" class=\"text-center\">".(($params['INSECURE'] === 0)? "No" : "Yes")."</td>";
+        echo "<td style=\"vertical-align: middle;\" class=\"text-center\">".$params['IP']."</td>";
         echo "<td class=\"text-center\">";
         echo "<form id=\"userAction\" action=\"admin.php\" method=\"post\">";
         echo "<input type=\"hidden\" name=\"csrf_token\" value=\"".$token."\">";

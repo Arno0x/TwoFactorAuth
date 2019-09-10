@@ -57,11 +57,11 @@ else {
 	       	}
 	    }
 	    
-	    $dbManager->close();
-	    	
     	//--------------------------------------------------
 	    // Login successful - let's proceed
 	    if (!isset($error)) {
+			// Save the IP address 
+			$dbManager->updateIpAddress($username, $_SERVER['REMOTE_ADDR']);
 	        //--------------------------------------------------
 	        // Creating a session to persist the authentication
 	        session_name(SESSION_NAME);
@@ -100,7 +100,10 @@ else {
     	else {
     	    http_response_code(403);
         	require_once("loginForm.php");   
-    	}
+		}
+
+		$dbManager->close();
+		
     } catch (Exception $e) {
     	$error = "[ERROR] Cannot open user database file";
     	require_once("loginForm.php");

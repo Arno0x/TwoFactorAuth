@@ -26,14 +26,14 @@ class DBManager extends SQLite3 {
     // @param gauthSecret: the user's Gauth secret to add
     // @param isAdmin: optionnal, specifies if the user is an admin. Defaults to 0. 
     // @return bool : TRUE if no error, FALSE otherwise
-    public function addUser ($username, $password, $gauthSecret, $isAdmin = 0) {
+    public function addUser ($username, $password, $gauthSecret, $isAdmin = 0, $Insecure = 0) {
 
 		// Prepare variables before the query
 		$passwordHash = hash('sha256',$password);
         
 		// Prepare SQL query
-		$sqlQuery = "INSERT INTO USERS (USERNAME ,PASSWORDHASH ,GAUTHSECRET ,ISADMIN) ";
-		$sqlQuery .= "VALUES (:username, :passwordhash, :secret, :isadmin);";
+		$sqlQuery = "INSERT INTO USERS (USERNAME ,PASSWORDHASH ,GAUTHSECRET ,ISADMIN, INSECURE) ";
+		$sqlQuery .= "VALUES (:username, :passwordhash, :secret, :isadmin, :insecure);";
 
 		$stmt = $this->prepare($sqlQuery);
 
@@ -42,6 +42,7 @@ class DBManager extends SQLite3 {
 			$stmt->bindValue(':passwordhash', $passwordHash, SQLITE3_TEXT);
 			$stmt->bindValue(':secret', $gauthSecret, SQLITE3_TEXT);
 			$stmt->bindValue(':isadmin', $isAdmin, SQLITE3_INTEGER);
+			$stmt->bindValue(':insecure', $Insecure, SQLITE3_INTEGER);
 
 			if ($stmt->execute()) {
 				return true;
@@ -98,7 +99,26 @@ class DBManager extends SQLite3 {
 
 		return $this->getUserData('PASSWORDHASH', $username);
     }
+    //--------------------------------------------------------
+    // Get the list of IP in the database 
+    // @return array : an array of IP
+    public function getIpList () {
+        
+        // Prepare SQL query
+		$sqlQuery = "SELECT DISTINCT IP from USERS where INSECURE = 1";
 
+        // Perform SQL query
+        if(!($ret = $this->query($sqlQuery))) {
+            return false;
+        }
+        else {
+        	$result = array();
+        	while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
+        			$result[$row["IP"]];
+        	}
+			return $result;
+        }
+    }
 	//--------------------------------------------------------
 	// Get a specific column of a given user
 	// @param column : The column
@@ -169,7 +189,7 @@ class DBManager extends SQLite3 {
     public function getUserList () {
         
         // Prepare SQL query
-        $sqlQuery = "SELECT USERNAME,ISADMIN from USERS;";
+        $sqlQuery = "SELECT USERNAME,ISADMIN,INSECURE,IP from USERS;";
 
         // Perform SQL query
         if(!($ret = $this->query($sqlQuery))) {
@@ -178,7 +198,11 @@ class DBManager extends SQLite3 {
         else {
         	$result = array();
         	while ($row = $ret->fetchArray(SQLITE3_ASSOC)) {
-        			$result[$row["USERNAME"]] = $row["ISADMIN"];
+				foreach($row as $key => $value) {
+					if ($key  !== 'USERNAME') {
+						$result[$row["USERNAME"]][$key] = $value;
+					}
+				}
         	}
 			return $result;
         }
@@ -218,6 +242,7 @@ class DBManager extends SQLite3 {
 			case 'PASSWORDHASH':
 			case 'GAUTHSECRET':
 			case 'ISADMIN':
+			case 'IP':
 				break;
 
 			default:
@@ -248,6 +273,16 @@ class DBManager extends SQLite3 {
     public function updateGauthSecret ($username, $gauthSecret) {
 
 		return $this->updateUserData('GAUTHSECRET', $gauthSecret, $username);
+	}
+	
+    //--------------------------------------------------------
+    // Updates the IP of a user
+    // @param username : the username
+    // @param IP; the IP of the user
+    // @return bool : TRUE if the IP was updated, FALSE otherwise
+    public function updateIpAddress ($username, $IP) {
+
+		return $this->updateUserData('IP', $IP, $username);
     }
     
     //--------------------------------------------------------

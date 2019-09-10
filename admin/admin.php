@@ -91,12 +91,12 @@ try {
                     	$gauth = new GoogleAuthenticator();
                         
                         isset($_POST['isAdmin']) ? $isAdmin = 1 : $isAdmin = 0;
-                        
+                        isset($_POST['Insecure']) ? $Insecure = 1 : $Insecure = 0;
                         // Generate a random secret
                         $secret = $gauth->createSecret();
                         
                         // Add user to the database
-                        if ($dbManager->addUser($userName,$_POST["password"],$secret,$isAdmin)) {
+                        if ($dbManager->addUser($userName,$_POST["password"],$secret,$isAdmin,$Insecure)) {
                         	// Create the QRCode as PNG image
                             $randomString = bin2hex(openssl_random_pseudo_bytes (15));
                             $qrcodeimg = QRCODE_TEMP_DIR.$randomString.".png";
@@ -206,6 +206,8 @@ try {
                   <tr>
                     <th class="text-center">USERNAME</th>
                     <th class="text-center">ADMIN</th>
+                    <th class="text-center">INSECURE</th>
+                    <th class="text-center">IP</th>
                     <th class="text-center">ACTIONS</th>
                   </tr>
                 </thead>
