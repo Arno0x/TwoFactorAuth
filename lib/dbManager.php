@@ -15,7 +15,7 @@ class DBManager extends SQLite3 {
     // Class constructor
     // @param dbFilename : The path to the database filename
     // @return bool : true if the database was properly opend, false otherwise
-    function __construct ($dbFilename, $flags = SQLITE3_OPEN_READWRITE) {
+    function __construct ($dbFilename, $flags = SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE) {
     	    parent::__construct($dbFilename, $flags);
     }
     
