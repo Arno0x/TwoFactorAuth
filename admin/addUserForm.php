@@ -50,6 +50,9 @@ if (!defined("INCLUSION_ENABLED")) {
 		<div class="checkbox text-center">
               <label><input type="checkbox" name="isAdmin" value="1">Give admin rights</label>
         </div>
+		<div class="checkbox text-center">
+              <label><input type="checkbox" name="passthrough" value="1">Give passthrough ip loggin</label>
+        </div>
 		<div class="text-center"><button id="submit" type="submit" name="action" value="addUser" class="btn btn-sm btn-primary">OK <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></button></div>
 	</form>
 </div> <!-- End of panel class -->

@@ -66,6 +66,8 @@ Adding a user :
 
 ![addUser page](http://i.imgur.com/TwzUSvl.jpg)
 
+New option check box passthrough IP
+
 How does it work ?
 -----------------
 
@@ -130,6 +132,7 @@ TwoFactorAuth provides such a script: **/twofactorauth/nginx/auth.php**.
 
 You'll have to edit your Nginx configuration file. Assuming the TwoFactorAuth application was deployed in a location named /twofactorauth/ on your webserver, add the following line under the "server" directive:
 
+If on creation user was added option passthrough IP, nginx will allowed to pass 2 factor authentication for IP address that was used to login. After pass 2 factor authentication, it will allow to pass through non browser based applications, such as git, that can't login with session based on IP source address
 
     auth_request /twofactorauth/nginx/auth.php;
 

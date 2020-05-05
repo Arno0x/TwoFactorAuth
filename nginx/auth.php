@@ -80,10 +80,19 @@ if (!defined('SESSION_NAME') OR !SESSION_NAME) {
 // Restore an existing session
 session_name(SESSION_NAME);
 session_start();
+require_once(DBMANAGER_LIB);
+$dbManager = new DBManager(USER_SQL_DATABASE_FILE);
+$ListOfIpAddress = $dbManager->getIpList();
+$dbManager->close();
 
 //====================================================
+// Check if we need passthrue ip address
+if (isset($ListOfIpAddress[$_SERVER [ "REMOTE_ADDR" ]]) === true) {
+	http_response_code(200);
+}
+	//====================================================
 // Check if the authentication has been completed
-if (isset($_SESSION["authenticated"]) && $_SESSION["authenticated"] === true) {
+elseif (isset($_SESSION["authenticated"]) && $_SESSION["authenticated"] === true) {
 	http_response_code(200);
 }
 else {
