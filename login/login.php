@@ -50,7 +50,7 @@ else {
 		    $gauth = new GoogleAuthenticator();
 	    	
 	    	// Checking password hash and token
-	    	if (($result['PASSWORDHASH'] !== hash("sha256",$password)) || !($gauth->verifyCode($result['GAUTHSECRET'],$token))) {
+	    	if (($result['PASSWORDHASH'] !== hash("sha256",$password)) || !($gauth->verifyCode($result['GAUTHSECRET'],$token,CLOCK_DISCREPANCY))) {
 	   			$error = "[ERROR] Authentication failed";
 	       	} else {
 	       		$isAdmin = $dbManager->getAdminStatus($username);
