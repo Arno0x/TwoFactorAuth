@@ -107,6 +107,9 @@ Edit the **/twofactorauth/config.php** file to match your needs. Most settings c
 
 - **AUTH\_SUCCEED\_REDIRECT\_URL** : The login page supports a URL parameter "from" (*ex: "http://www.example.com/twofactorauth/login/login.php?from=/myapp"*). Upon successful login, the login page will redirect the user to the path specified in the "from" parameter (*NB: it can only be a path local to the FQDN, no cross-site*). However, if the "from" parameter is not present in the URL, the login page will redirect the user to the URL specified in AUTH\_SUCCEED\_REDIRECT\_URL
 
+- **CLOCK\_DISCREPANCY** : Set this to the "clock skew handing factor" (googleAuthenticator discrepancy). This is the number of tokens before/after flexibility in time synchronisation allowed, e.g. a value of 2 will check tokens "now -2", "now -1", now, "now+1" and "now+2". use "0" for strict time synchronisation, 1 for +- 30 seconds etc....  Tradeoff - 0 expects good clock synchronisation, but is most secure,  1 <DEFAULT> allows some flexibility in clock synchronisation at the risk of lower security,  2 .... etc
+
+
 Security aspects
 --------------
 The user database must be protected against remote access. To achieve this, you can either :
